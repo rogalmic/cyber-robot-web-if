@@ -94,3 +94,25 @@ navigator.bluetooth.requestDevice({ filters: [{ services: ['0000fff3-0000-1000-8
 })
 .catch(error => { console.log(error); });
 ```
+
+Single messages (full ASCII):
+```
+move = `12D${p1}S${p2}`
+sound = `56${p1}E`
+led = `78${p1}`
+stop = `99SP`
+```
+Sequence messages:
+```
+binary_sequence[20] = `34(0x11, ..., 0x34)`
+
+binarystart = 51 , 52 (`34`)
+binaryforward = 0-3
+binaryback = 4-7
+binaryleft = 8-11
+binaryright = 12-15
+binarystop = 17
+binaryled = 18 - ?
+binaryvoice = 22 - ?
+binaryendsequence = 52
+```
