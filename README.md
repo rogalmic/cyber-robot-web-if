@@ -1,5 +1,5 @@
 # cyber-robot-web-if
-[Clementoni Cyber Robot](https://www.google.pl/search?q=Clementoni+cyber+robot&source=lnms&tbm=isch) web access via Google Chrome's Web Bluetooth experimental feature.
+[Clementoni Cyber Robot](https://www.google.pl/search?q=Clementoni+cyber+robot&source=lnms&tbm=isch) web access via Google Chrome's Web Bluetooth "experimental web platform" feature in `chrome://flags/#enable-experimental-web-platform-features`.
 
 Some info about protocol - [CyberRobotBrain java project](https://github.com/prof18/CyberRobotBrain/tree/master/app/src/main/java/com/clemgmelc/cyberrobotbrain)
 
@@ -45,6 +45,38 @@ Getting Characteristics...
 >> Characteristic: 0000fff1-0000-1000-8000-00805f9b34fb [NOTIFY]
 >> Characteristic: 0000fff6-0000-1000-8000-00805f9b34fb [NOTIFY]
 >> Characteristic: 0000fff2-0000-1000-8000-00805f9b34fb [WRITE, NOTIFY]
+```
+
+```
+Requesting any Bluetooth Device...
+Connecting to GATT Server...
+Getting Device Information Service...
+Getting Device Information Characteristics...
+> Manufacturer Name String: AMICCOM Elec.
+> Model Number String: MD7107
+> System ID: 
+  > Manufacturer Identifier: 55AA55AA55
+  > Organizationally Unique Identifier: AA55AA
+> Manufacturer Name String: AMICCOM Elec.
+> Firmware Revision String: 01.1
+> System ID: 
+  > Manufacturer Identifier: 55AA55AA55
+  > Organizationally Unique Identifier: AA55AA
+> Hardware Revision String: U01
+> Firmware Revision String: 01.1
+> Software Revision String: 0093
+> Hardware Revision String: U01
+> PnP ID:
+  > Vendor ID Source: Bluetooth
+  > Vendor ID: 192
+  > Product ID: 0
+  > Product Version: 0
+> Software Revision String: 0093
+> PnP ID:
+  > Vendor ID Source: Bluetooth
+  > Vendor ID: 192
+  > Product ID: 0
+  > Product Version: 0
 ```
 
 Kindof-working communication sample (after enabling experimental feature in chrome):
