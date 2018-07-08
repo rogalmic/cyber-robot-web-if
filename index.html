@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">    
+    <title>Cyber Robot Chrome controller</title>
+    <script type="text/javascript">
+      window.addEventListener('error', function(error) {
+		var isChrome = !!window.chrome
+        if (!isChrome) {
+          console.error(error);
+          ChromeSamples.setStatus(error.message + ' (Your browser may not support this feature.)');
+          error.preventDefault();
+        }
+      });
+    </script>
+    
+    <style>
+	</style>
+</head>
+
+<body>
+    
+<script>
+function onButtonClick() {
+navigator.bluetooth.requestDevice({ filters: [{ services: ['0000fff3-0000-1000-8000-00805f9b34fb'] }] })
+.then(device => device.gatt.connect())
+.then(server => server.getPrimaryService('0000fff3-0000-1000-8000-00805f9b34fb'))
+.then(service => service.getCharacteristic('0000fff5-0000-1000-8000-00805f9b34fb'))
+.then(characteristic => {
+  var forwardCommand = Uint8Array.of(0x31, 0x32, 0x44, 0x30, 0x53, 0x2d, 0x31);
+  return characteristic.writeValue(forwardCommand);
+})
+.then(_ => {
+  console.log('Command sent.');
+})
+.catch(error => { console.log(error); });
+}
+</script>
+
+<input type="button" onclick="javascript:onButtonClick()" value="Work" />
+
+</body>
+</html>
