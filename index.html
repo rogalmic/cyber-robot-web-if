@@ -20,6 +20,12 @@
       }
 
       switch (event.key) {
+        case 'PageDown':
+          sendToRobot('781');
+          break;
+        case "PageUp":
+          sendToRobot('782');
+          break;
         case 'ArrowDown':
           sendToRobot('12D1S-1');
           break;
@@ -33,8 +39,38 @@
           sendToRobot('12D3S-1');
           break;
         case 'Spacebar':
+        case ' ':
           sendToRobot('99SP');
           break;
+        case '1':
+          sendToRobot('561E');
+          break;
+        case '2':
+          sendToRobot('562E');
+          break;
+        case '3':
+          sendToRobot('563E');
+          break;
+        case '4':
+          sendToRobot('564E');
+          break;
+        case '5':
+          sendToRobot('565E');
+          break;
+        case '6':
+          sendToRobot('566E');
+          break;
+        case '7':
+          sendToRobot('567E');
+          break;
+        case '8':
+          sendToRobot('568E');
+          break;
+        case '9':
+          sendToRobot('569E');
+          break;
+        case '0':
+          sendToRobot('5610E');
         default:
           return;
       }
