@@ -1,7 +1,12 @@
-# cyber-robot-web-if
-[Clementoni Cyber Robot](https://www.google.pl/search?q=Clementoni+cyber+robot&source=lnms&tbm=isch) web access via Google Chrome's Web Bluetooth "experimental web platform" feature in `chrome://flags/#enable-experimental-web-platform-features`.
+# Cyber Robot Web Interface
+[Clementoni Cyber Robot](https://www.google.pl/search?q=Clementoni+cyber+robot&source=lnms&tbm=isch) web access via Google Chrome
+
+Chrome's Web Bluetooth "experimental web platform" feature in `chrome://flags/#enable-experimental-web-platform-features` (this needs to be done separately for Chrome-vscode debugging process, since different user folder is used). `Debugger for Chrome` extension needs to be installed to debug via VS Code launch configuration.
 
 Some info about protocol - [CyberRobotBrain java project](https://github.com/prof18/CyberRobotBrain/tree/master/app/src/main/java/com/clemgmelc/cyberrobotbrain)
+
+
+# Bluetooth specific details
 
 Some bluetooth Gatt info about the device:
 
@@ -79,6 +84,8 @@ Getting Device Information Characteristics...
   > Product Version: 0
 ```
 
+# Cyber Robot Sample Javascript Communication
+
 Kindof-working communication sample (after enabling experimental feature in chrome):
 ```
 navigator.bluetooth.requestDevice({ filters: [{ services: ['0000fff3-0000-1000-8000-00805f9b34fb'] }] })
@@ -94,6 +101,8 @@ navigator.bluetooth.requestDevice({ filters: [{ services: ['0000fff3-0000-1000-8
 })
 .catch(error => { console.log(error); });
 ```
+
+# Cyber Robot Protocol
 
 Single messages (full ASCII):
 ```
