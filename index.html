@@ -7,12 +7,8 @@
   <script type="text/javascript">
     gattServer = null;
     window.addEventListener('error', function (error) {
-      var isChrome = !!window.chrome
-      if (!isChrome) {
-        console.error(error);
-        alert(error.message + ' (Your browser may not support this feature.)');
-        error.preventDefault();
-      }
+      console.error(error);
+      error.preventDefault();
     });
     window.addEventListener("keydown", function (event) {
       if (event.defaultPrevented) {
@@ -75,9 +71,42 @@
           return;
       }
 
-
       event.preventDefault();
     }, true);
+
+    function sendToRobot(message) {
+      var encoder = new TextEncoder('utf-8');
+      var serviceUuid = '0000fff3-0000-1000-8000-00805f9b34fb';
+      var characteristicUuid = '0000fff5-0000-1000-8000-00805f9b34fb';
+
+
+      if (gattServer === null) {
+        navigator.bluetooth.requestDevice({ acceptAllDevices: true })
+          .then(device => device.gatt.connect())
+          .then(server => gattServer = server)
+          .catch(e => console.log(e));
+      }
+
+      if (gattServer === null) {
+        return;
+      }
+
+      gattServer.getPrimaryService(serviceUuid)
+        .then(service => service.getCharacteristic(characteristicUuid))
+        .then(characteristic => {
+          var forwardCommand = encoder.encode(message);
+          return characteristic.writeValue(forwardCommand);
+        })
+        .then(_ => {
+          console.log('Command sent.');
+        })
+        .catch(error => { console.log(error); });
+    }
+
+    function onButtonClick() {
+      var message = document.getElementById('message').value;
+      sendToRobot(message);
+    }
   </script>
 
   <style>
@@ -123,45 +152,6 @@
 </head>
 
 <body>
-
-  <script type="text/javascript" >
-
-
-    function sendToRobot(message) {
-      var encoder = new TextEncoder('utf-8');
-      var serviceUuid = '0000fff3-0000-1000-8000-00805f9b34fb';
-      var characteristicUuid = '0000fff5-0000-1000-8000-00805f9b34fb';
-
-
-      if (gattServer === null) {
-        navigator.bluetooth.requestDevice({ acceptAllDevices: true })
-          .then(device => device.gatt.connect())
-          .then(server => gattServer = server)
-          .catch(e => console.log(e));
-      }
-
-      if (gattServer === null) {
-        return;
-      }
-
-      gattServer.getPrimaryService(serviceUuid)
-        .then(service => service.getCharacteristic(characteristicUuid))
-        .then(characteristic => {
-          var forwardCommand = encoder.encode(message);
-          return characteristic.writeValue(forwardCommand);
-        })
-        .then(_ => {
-          console.log('Command sent.');
-        })
-        .catch(error => { console.log(error); });
-    }
-
-    function onButtonClick() {
-      var message = document.getElementById('message').value;
-      sendToRobot(message);
-    }
-  </script>
-
   <div id="container">
     <ul>
       <li>move = `12D${p1}S${p2}`</li>
