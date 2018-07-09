@@ -15,12 +15,22 @@
         return;
       }
 
+      if (document.getElementById('message').value) {
+        return;
+      }
+
       switch (event.key) {
-        case 'PageDown':
+        case 'F1':
           sendToRobot('781');
           break;
-        case "PageUp":
+        case 'F2':
           sendToRobot('782');
+          break;
+        case 'F3':
+          sendToRobot('783');
+          break;
+        case 'F4':
+          sendToRobot('784');
           break;
         case 'ArrowDown':
           sendToRobot('12D1S-1');
@@ -36,6 +46,9 @@
           break;
         case 'Spacebar':
         case ' ':
+          sendToRobot('12DE');
+          break;
+        case 'Enter':
           sendToRobot('99SP');
           break;
         case '1':
@@ -81,7 +94,7 @@
 
 
       if (gattServer === null) {
-        navigator.bluetooth.requestDevice({ acceptAllDevices: true })
+        navigator.bluetooth.requestDevice({ filters: [{ services: [serviceUuid] }] })
           .then(device => device.gatt.connect())
           .then(server => gattServer = server)
           .catch(e => console.log(e));
@@ -154,10 +167,10 @@
 <body>
   <div id="container">
     <ul>
-      <li>move = `12D${p1}S${p2}`</li>
-      <li>sound = `56${p1}E`</li>
-      <li>led = `78${p1}`</li>
-      <li>stop = `99SP`</li>
+      <li>Use keyboard arrow keys to move, space to stop</li>
+      <li>Use F1-F4 to control lights</li>
+      <li>Use 0-9 to control sounds</li>
+      <li>Use Enter for `99SP`</li>
     </ul>
 
     <input type="text" id="message" style="text-transform: uppercase;" />
