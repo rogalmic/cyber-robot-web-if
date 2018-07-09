@@ -4,6 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">    
     <title>Cyber Robot Chrome controller</title>
     <script type="text/javascript">
+      gattServer = null;
       window.addEventListener('error', function(error) {
         var isChrome = !!window.chrome
         if (!isChrome) {
@@ -12,24 +13,67 @@
           error.preventDefault();
         }
       });
+      window.addEventListener("keydown", function (event) {
+        if (event.defaultPrevented) {
+          return; 
+        }
+      
+        switch (event.key) {
+          case 'ArrowDown':
+            sendToRobot('12D1S-1');
+            break;
+          case "ArrowUp":
+            sendToRobot('12D0S-1');
+            break;
+          case 'ArrowLeft':
+            sendToRobot('12D2S-1');
+            break;
+          case 'ArrowRight':
+            sendToRobot('12D3S-1');
+            break;
+          default:
+            return; 
+        }
+      
+
+        event.preventDefault();
+      }, true);
     </script>
     
     <style>
+* {font-size:24px; font-family:Tahoma,sans-serif; }
+*:focus { outline: none; }
+
+html, body { width: 100%; height: 100%; }
+body {background: radial-gradient(circle at 30%, #eee, #fff 30%, #ccc 75%, #fff 75%); overflow: hidden;}
+div#container {margin-left: -300px; margin-top: -250px; position: absolute; left:50%; top: 50%; position: absolute; width: 600px; height: 400px;}
+input { color: white; border-radius: 8px; text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2); background: rgb(66, 184, 221); padding: 10px 20px;}
     </style>
 </head>
 
 <body>
     
 <script>
-function onButtonClick() {
+
+
+function sendToRobot(message) {
 var encoder = new TextEncoder('utf-8');
-var message = document.getElementById('message').value;
 var serviceUuid = '0000fff3-0000-1000-8000-00805f9b34fb';
 var characteristicUuid = '0000fff5-0000-1000-8000-00805f9b34fb';
 
-navigator.bluetooth.requestDevice({acceptAllDevices: true})
-.then(device => device.gatt.connect())
-.then(server => server.getPrimaryService(serviceUuid))
+
+if (gattServer === null) {
+ navigator.bluetooth.requestDevice({acceptAllDevices: true})
+ .then(device => device.gatt.connect())
+ .then(server => gattServer = server)
+ .catch(e => console.log(e));
+}
+
+if (gattServer === null) {
+ return;
+}
+
+gattServer.getPrimaryService(serviceUuid)
 .then(service => service.getCharacteristic(characteristicUuid))
 .then(characteristic => {
   var forwardCommand = encoder.encode(message);
@@ -40,8 +84,14 @@ navigator.bluetooth.requestDevice({acceptAllDevices: true})
 })
 .catch(error => { console.log(error); });
 }
+
+function onButtonClick() {
+var message = document.getElementById('message').value;
+sendToRobot(message);
+}
 </script>
 
+<div id="container">
 <ul>
 <li>move = `12D${p1}S${p2}`</li>
 <li>sound = `56${p1}E`</li>
@@ -49,8 +99,8 @@ navigator.bluetooth.requestDevice({acceptAllDevices: true})
 <li>stop = `99SP`</li>
 </ul>
 
-<input type="text" id="message" />
+<input type="text" id="message" style="text-transform: uppercase;" />
 <input type="button" onclick="javascript:onButtonClick()" value="Send to robot" />
-
+</div>
 </body>
 </html>
