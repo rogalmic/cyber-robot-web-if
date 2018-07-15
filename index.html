@@ -6,6 +6,13 @@
   <title>Cyber Robot Chrome controller</title>
   <script type="text/javascript">
     gattServer = null;
+
+    var oldLog = console.log;
+    console.log = function (message) {
+      logText(message);
+      oldLog.apply(console, arguments);
+    };
+
     window.addEventListener('error', function (error) {
       console.error(error);
       error.preventDefault();
@@ -91,40 +98,69 @@
       var encoder = new TextEncoder('utf-8');
       var serviceUuid = '0000fff3-0000-1000-8000-00805f9b34fb';
       var characteristicUuid = '0000fff5-0000-1000-8000-00805f9b34fb';
-
+      var notificationUuid = '0000fff4-0000-1000-8000-00805f9b34fb';
 
       if (gattServer === null) {
-        navigator.bluetooth.requestDevice({ filters: [{ services: [serviceUuid] }] })
+        gattServer = 'loading';
+        navigator.bluetooth.requestDevice({
+          filters: [{
+            services: [serviceUuid]
+          }],
+           filters: [{ services: [serviceUuid] }] })
           .then(device => device.gatt.connect())
-          .then(server => gattServer = server)
-          .catch(e => console.log(e));
+          .then(server => {
+            gattServer = server;
+            return server;
+          })
+          .then(server => server.getPrimaryService(serviceUuid))
+          .then(service => service.getCharacteristic(notificationUuid))
+          .then(characteristic => characteristic.startNotifications()
+            .then(_ => characteristic.addEventListener('characteristicvaluechanged', handleNotifications)))          
+          .catch(e => {
+            console.error(e);
+            gattServer = null;
+          });
       }
 
-      if (gattServer === null) {
+      if (gattServer == 'loading') {
+        setTimeout(() => sendToRobot(message), 100);
         return;
       }
 
       gattServer.getPrimaryService(serviceUuid)
         .then(service => service.getCharacteristic(characteristicUuid))
         .then(characteristic => {
-          var forwardCommand = encoder.encode(message);
-          return characteristic.writeValue(forwardCommand);
+          var binaryCommand = encoder.encode(message);
+          return characteristic.writeValue(binaryCommand);
         })
         .then(_ => {
-          console.log('Command sent.');
+          console.log(`'${message}' sent.`);
         })
-        .catch(error => { console.log(error); });
+        .catch(e => console.error(e));
     }
 
     function onButtonClick() {
       var message = document.getElementById('message').value;
       sendToRobot(message);
     }
+
+    function logText(text) {
+      document.getElementById('log').value += `${text}\n`;
+    }
+
+    function handleNotifications(event) {
+        let value = event.target.value;
+        let a = [];
+        for (let i = 0; i < value.byteLength; i++) {
+          a.push('0x' + ('00' + value.getUint8(i).toString(16)).slice(-2));
+        }
+        console.log('> ' + a.join(' '));
+      }
   </script>
 
   <style>
     * {
-      font-size: 24px;
+      font-size: 20px;
       font-family: Tahoma, sans-serif;
     }
 
@@ -161,6 +197,14 @@
       background: rgb(66, 184, 221);
       padding: 10px 20px;
     }
+
+    textarea#log {
+      display: block; 
+      font: 10px monospace;
+      width: 100%;
+      height : 250px;
+      margin: 10px;
+    }
   </style>
 </head>
 
@@ -175,6 +219,8 @@
 
     <input type="text" id="message" style="text-transform: uppercase;" />
     <input type="button" onclick="javascript:onButtonClick()" value="Send to robot" />
+
+    <textarea id="log" readonly></textarea>
   </div>
 </body>
 
