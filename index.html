@@ -5,7 +5,7 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>Cyber Robot Chrome controller</title>
   <script type="text/javascript">
-    gattServer = null;
+    var gattServer = null;
 
     var oldLog = console.log;
     console.log = function (message) {
@@ -95,18 +95,17 @@
     }, true);
 
     function sendToRobot(message) {
-      var encoder = new TextEncoder('utf-8');
-      var serviceUuid = '0000fff3-0000-1000-8000-00805f9b34fb';
-      var characteristicUuid = '0000fff5-0000-1000-8000-00805f9b34fb';
-      var notificationUuid = '0000fff4-0000-1000-8000-00805f9b34fb';
+      let encoder = new TextEncoder('utf-8'); 
+      let serviceUuid = '0000fff3-0000-1000-8000-00805f9b34fb';
+      let characteristicUuid = '0000fff5-0000-1000-8000-00805f9b34fb';
+      let notificationUuid = '0000fff4-0000-1000-8000-00805f9b34fb';
 
       if (gattServer === null) {
         gattServer = 'loading';
         navigator.bluetooth.requestDevice({
-          filters: [{
-            services: [serviceUuid]
-          }],
-           filters: [{ services: [serviceUuid] }] })
+          optionalServices: [serviceUuid],
+          acceptAllDevices: true 
+        })
           .then(device => device.gatt.connect())
           .then(server => {
             gattServer = server;
