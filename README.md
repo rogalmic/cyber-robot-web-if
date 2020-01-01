@@ -1,7 +1,7 @@
 # Cyber Robot [Web Interface](https://rogalmic.github.io/cyber-robot-web-if/)
-[Clementoni Cyber Robot](https://www.google.pl/search?q=Clementoni+cyber+robot&source=lnms&tbm=isch) web access via Google Chrome
+[Clementoni Cyber Robot](https://www.google.pl/search?q=Clementoni+cyber+robot&source=lnms&tbm=isch) web access via Google Chrome 
 
-Chrome's Web Bluetooth "experimental web platform" feature in `chrome://flags/#enable-experimental-web-platform-features` (this needs to be done separately for Chrome-vscode debugging process, since different user folder is used). `Debugger for Chrome` extension needs to be installed to debug via VS Code launch configuration.
+Chrome's Web Bluetooth "experimental web platform" feature in `chrome://flags/#enable-experimental-web-platform-features` (this needs to be done separately for Chrome-vscode debugging process, since different user folder is used). `Debugger for Chrome` extension needs to be installed to debug via VS Code launch configuration. [Link](https://rogalmic.github.io/cyber-robot-web-if/) to working sample after enabling BT.
 
 Some info about protocol - [CyberRobotBrain java project](https://github.com/prof18/CyberRobotBrain/tree/master/app/src/main/java/com/clemgmelc/cyberrobotbrain)
 
